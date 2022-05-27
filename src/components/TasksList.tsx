@@ -7,6 +7,7 @@ import {
   Text,
   StyleSheet,
   FlatListProps,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 
@@ -31,6 +32,16 @@ export function TasksList({
   toggleTaskDone,
   removeTask,
 }: TasksListProps) {
+  const handleRemoveTask = (id: number) => {
+    Alert.alert("Remover item", "Tem certeza que deseja remover esse item?", [
+      {
+        text: "Não",
+        style: "cancel",
+      },
+      { text: "Sim", onPress: () => removeTask(id) },
+    ]);
+  };
+
   return (
     <FlatList
       data={tasks}
@@ -69,7 +80,7 @@ export function TasksList({
               testID={`trash-${index}`}
               style={{ paddingHorizontal: 24 }}
               //DONE - use onPress (remove task) prop
-              onPress={() => removeTask(item.id)}
+              onPress={() => handleRemoveTask(item.id)}
             >
               <Image source={trashIcon} />
             </TouchableOpacity>

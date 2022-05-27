@@ -10,9 +10,7 @@ export function Home() {
 
   function handleAddTask(newTaskTitle: string) {
     //DONE - add new task
-    const taskListFiltered = tasks.filter(
-      (task) => task.title === newTaskTitle
-    );
+    const taskListFiltered = tasks.find((task) => task.title === newTaskTitle);
 
     if (taskListFiltered) {
       return Alert.alert(
@@ -46,9 +44,20 @@ export function Home() {
 
   function handleRemoveTask(id: number) {
     //DONE - remove task from state
-    const taskListFiltered = tasks.filter((task) => task.id !== id);
+    Alert.alert("Remover item", "Tem certeza que deseja remover esse item?", [
+      {
+        text: "Não",
+        style: "cancel",
+      },
+      {
+        text: "Sim",
+        onPress: () => {
+          const taskListFiltered = tasks.filter((task) => task.id !== id);
 
-    setTasks([...taskListFiltered]);
+          setTasks([...taskListFiltered]);
+        },
+      },
+    ]);
   }
 
   return (

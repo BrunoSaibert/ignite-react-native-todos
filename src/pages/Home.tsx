@@ -2,31 +2,41 @@ import React, { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 
 import { Header } from "../components/Header";
-import { Task, TasksList } from "../components/TasksList";
+import { TasksList } from "../components/TasksList";
+import { Task } from "../components/TaskItem";
 import { TodoInput } from "../components/TodoInput";
 
 export function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  function handleAddTask(newTaskTitle: string) {
-    //DONE - add new task
+  function verifyTaskTitle(newTaskTitle: string) {
     const taskListFiltered = tasks.find((task) => task.title === newTaskTitle);
 
     if (taskListFiltered) {
-      return Alert.alert(
+      Alert.alert(
         "Task já cadastrada",
         "Você não pode cadastrar uma task com o mesmo nome",
         [{ text: "Ok" }]
       );
+      return false;
     }
 
-    const newTask = {
-      id: tasks.length + 1,
-      title: newTaskTitle,
-      done: false,
-    };
+    return true;
+  }
 
-    setTasks((prev) => [...prev, newTask]);
+  function handleAddTask(newTaskTitle: string) {
+    //DONE - add new task
+    const isTitleAvailable = verifyTaskTitle(newTaskTitle);
+
+    if (isTitleAvailable) {
+      const newTask = {
+        id: tasks.length + 1,
+        title: newTaskTitle,
+        done: false,
+      };
+
+      setTasks((prev) => [...prev, newTask]);
+    }
   }
 
   function handleToggleTaskDone(id: number) {
@@ -60,6 +70,18 @@ export function Home() {
     ]);
   }
 
+  function handleEditTask(id: number, newTaskTitle: string) {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === id) {
+        task.title = newTaskTitle;
+      }
+
+      return task;
+    });
+
+    setTasks([...updatedTasks]);
+  }
+
   return (
     <View style={styles.container}>
       <Header tasksCounter={tasks.length} />
@@ -70,6 +92,7 @@ export function Home() {
         tasks={tasks}
         toggleTaskDone={handleToggleTaskDone}
         removeTask={handleRemoveTask}
+        editTask={handleEditTask}
       />
     </View>
   );
